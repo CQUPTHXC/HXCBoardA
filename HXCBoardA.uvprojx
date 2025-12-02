@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>.;Core\Inc;Drivers\STM32F4xx_HAL_Driver\Inc;Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;Middlewares\Third_Party\FreeRTOS\Source\include;Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;Drivers\CMSIS\Device\ST\STM32F4xx\Include;Drivers\CMSIS\Include;.cmsis\include;MDK-ARM\RTE\_HXCBoardATest_FreeRTOS_F427VIT6;User\App\Inc;User\Bsp\Inc;User\Lib\Inc;User\B2MW\Inc;User\MiddleWare\B2MW\Inc;User\MiddleWare\MWCommon\Inc;User\MiddleWare\Elrs\Inc</IncludePath>
+              <IncludePath>.;Core\Inc;Drivers\STM32F4xx_HAL_Driver\Inc;Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;Middlewares\Third_Party\FreeRTOS\Source\include;Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS_V2;Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;Drivers\CMSIS\Device\ST\STM32F4xx\Include;Drivers\CMSIS\Include;.cmsis\include;MDK-ARM\RTE\_HXCBoardATest_FreeRTOS_F427VIT6;User\App\Inc;User\Bsp\Inc;User\Lib\Inc;User\B2MW\Inc;User\MiddleWare\B2MW\Inc;User\MiddleWare\MWCommon\Inc;User\MiddleWare\Elrs\Inc;User\MiddleWare\Log\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -382,52 +382,37 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>USER/LIB/SRC</GroupName>
+          <GroupName>USER/MIDDLEWARE/MWCOMMON/SRC</GroupName>
           <Files>
             <File>
-              <FileName>DM_Imu.cpp</FileName>
+              <FileName>MW_AssertStatus.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>User/Lib/Src/DM_Imu.cpp</FilePath>
+              <FilePath>User/MiddleWare/MWCommon/Src/MW_AssertStatus.cpp</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USER/MIDDLEWARE/LOG/SRC</GroupName>
+          <Files>
             <File>
-              <FileName>dwt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/dwt.c</FilePath>
-            </File>
-            <File>
-              <FileName>MT6701.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/MT6701.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>RingBuffer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/RingBuffer.c</FilePath>
-            </File>
-            <File>
-              <FileName>Uart_DMA.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/Uart_DMA.c</FilePath>
-            </File>
-            <File>
-              <FileName>VOFA.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>User/Lib/Src/VOFA.c</FilePath>
-            </File>
-            <File>
-              <FileName>ws2812.cpp</FileName>
+              <FileName>Log.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>User/Lib/Src/ws2812.cpp</FilePath>
+              <FilePath>User/MiddleWare/Log/Src/Log.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USER/MIDDLEWARE/B2MW/SRC</GroupName>
+          <Files>
+            <File>
+              <FileName>B2MW_CANManager.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>User/MiddleWare/B2MW/Src/B2MW_CANManager.cpp</FilePath>
             </File>
             <File>
-              <FileName>Y_Foc.cpp</FileName>
+              <FileName>B2MW_Timer.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>User/Lib/Src/Y_Foc.cpp</FilePath>
+              <FilePath>User/MiddleWare/B2MW/Src/B2MW_Timer.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -482,37 +467,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>USER/MIDDLEWARE/MWCOMMON/SRC</GroupName>
+          <GroupName>USER/LIB/SRC</GroupName>
           <Files>
             <File>
-              <FileName>MW_AssertStatus.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>User/MiddleWare/MWCommon/Src/MW_AssertStatus.cpp</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>USER/MIDDLEWARE/ELRS/SRC</GroupName>
-          <Files>
-            <File>
-              <FileName>elrs.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>User/MiddleWare/Elrs/Src/elrs.cpp</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>USER/MIDDLEWARE/B2MW/SRC</GroupName>
-          <Files>
-            <File>
-              <FileName>B2MW_CANManager.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>User/MiddleWare/B2MW/Src/B2MW_CANManager.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>B2MW_Timer.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>User/MiddleWare/B2MW/Src/B2MW_Timer.cpp</FilePath>
+              <FileName>dwt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>User/Lib/Src/dwt.c</FilePath>
             </File>
           </Files>
         </Group>

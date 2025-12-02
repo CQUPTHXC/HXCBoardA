@@ -1,0 +1,78 @@
+T4264 000:005.002   SEGGER J-Link V7.64 Log File
+T4264 000:005.151   DLL Compiled: Apr  1 2022 16:04:43
+T4264 000:005.172   Logging started @ 2025-12-02 06:00
+T4264 000:005.193 - 5.204ms
+T4264 000:005.218 JLINK_SetWarnOutHandler(...)
+T4264 000:005.240 - 0.032ms
+T4264 000:005.262 JLINK_OpenEx(...)
+T4264 000:007.114   Firmware: J-Link V9 compiled May  7 2021 16:26:12
+T4264 000:007.724   Firmware: J-Link V9 compiled May  7 2021 16:26:12
+T4264 000:007.868   Decompressing FW timestamp took 89 us
+T4264 000:015.630   Hardware: V9.60
+T4264 000:015.677   S/N: 69610459
+T4264 000:015.709   OEM: SEGGER
+T4264 000:015.744   Feature(s): GDB, RDI, FlashBP, FlashDL, JFlash
+T4264 000:018.143   TELNET listener socket opened on port 19021
+T4264 000:018.342   WEBSRV WEBSRV_Init(): Starting webserver thread(s)
+T4264 000:018.594   WEBSRV Webserver running on local port 19080
+T4264 000:026.995 - 21.770ms returns "O.K."
+T4264 000:027.084 JLINK_GetEmuCaps()
+T4264 000:027.132 - 0.072ms returns 0xB9FF7BBF
+T4264 000:027.188 JLINK_TIF_GetAvailable(...)
+T4264 000:027.652 - 0.503ms
+T4264 000:027.731 JLINK_SetErrorOutHandler(...)
+T4264 000:027.779 - 0.071ms
+T4264 000:027.842 JLINK_ExecCommand("ProjectFile = "D:\stm32\Project_keil\HXCBoardA\JLinkSettings.ini"", ...). 
+T4264 000:035.003 - 7.177ms returns 0x00
+T4264 000:037.784 JLINK_ExecCommand("Device = STM32F427VITx", ...). 
+T4264 000:039.630   Device "STM32F427VI" selected.
+T4264 000:040.089 - 2.288ms returns 0x00
+T4264 000:040.119 JLINK_ExecCommand("DisableConnectionTimeout", ...). 
+T4264 000:040.142 - 0.011ms returns 0x01
+T4264 000:040.163 JLINK_GetHardwareVersion()
+T4264 000:040.183 - 0.029ms returns 96000
+T4264 000:040.207 JLINK_GetDLLVersion()
+T4264 000:040.226 - 0.029ms returns 76400
+T4264 000:040.247 JLINK_GetOEMString(...)
+T4264 000:040.268 JLINK_GetFirmwareString(...)
+T4264 000:040.287 - 0.029ms
+T4264 000:044.336 JLINK_GetDLLVersion()
+T4264 000:044.380 - 0.055ms returns 76400
+T4264 000:044.405 JLINK_GetCompileDateTime()
+T4264 000:044.428 - 0.035ms
+T4264 000:046.008 JLINK_GetFirmwareString(...)
+T4264 000:046.040 - 0.042ms
+T4264 000:047.436 JLINK_GetHardwareVersion()
+T4264 000:047.471 - 0.047ms returns 96000
+T4264 000:049.507 JLINK_GetSN()
+T4264 000:049.536 - 0.043ms returns 69610459
+T4264 000:051.946 JLINK_GetOEMString(...)
+T4264 000:055.517 JLINK_TIF_Select(JLINKARM_TIF_JTAG)
+T4264 000:057.793 - 2.293ms returns 0x00
+T4264 000:057.825 JLINK_HasError()
+T4264 000:057.858 JLINK_SetSpeed(5000)
+T4264 000:058.199 - 0.354ms
+T4264 000:058.226 JLINK_GetIdData(pIdData)
+T4264 000:060.227   InitTarget() start
+T4264 000:060.274    J-Link Script File: Executing InitTarget()
+T4264 000:065.094   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T4264 000:067.973   Error: Scanning JTAG chain failed.
+T4264 000:069.875   Can not attach to CPU. Trying connect under reset.
+T4264 000:124.776   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T4264 000:127.981   Error: Scanning JTAG chain failed.
+T4264 000:131.099   Connecting to CPU via connect under reset failed.
+T4264 000:184.708   InitTarget() end
+T4264 000:248.666   InitTarget() start
+T4264 000:248.724    J-Link Script File: Executing InitTarget()
+T4264 000:252.887   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T4264 000:254.675   Error: Scanning JTAG chain failed.
+T4264 000:255.964   Can not attach to CPU. Trying connect under reset.
+T4264 000:310.932   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T4264 000:312.974   Error: Scanning JTAG chain failed.
+T4264 000:315.475   Connecting to CPU via connect under reset failed.
+T4264 000:367.983   InitTarget() end
+T4264 000:368.031 - 309.815ms
+T4264 003:403.833 JLINK_Close()
+T4264 003:417.786 - 13.980ms
+T4264 003:417.825   
+T4264 003:417.845   Closed

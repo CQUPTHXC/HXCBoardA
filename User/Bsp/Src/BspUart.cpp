@@ -405,7 +405,7 @@ BspResult<bool> Uart::SetRxCallback(UartRxCallback_t _userCallback)
     snprintf(infoBuffer, sizeof(infoBuffer), 
              "===== %s Info =====\n"
              "deviceID: %d\n"
-             "baud: %lu\n"
+             "baud: %u\n"
              "Callbacks: Tx=%s, Rx=%s\n"
              "=======================\n",
              UartInstanceName(handle->Instance),

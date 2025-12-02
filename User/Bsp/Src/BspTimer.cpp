@@ -1,9 +1,9 @@
 #include "BspTimer.h"
 #include <cstdint>
+#include <cstdio>
 
 extern "C"
 {
-#include "VOFA.h"
 }
 
 static Timer* timerInstances[DEVICE_TIMER_END - DEVICE_TIMER_START] = {nullptr}; // 全局单例指针
@@ -210,23 +210,24 @@ void Timer::InvokeCallback()
   }
 }
 
-BspResult<bool> Timer::ShowInfo() const
+const char* Timer::GetInfo() const
 {
-  BSP_CHECK(htim != nullptr, BspError::NullHandle, bool);
+  if (!htim) return "Timer Not Initialized";
 
+  static char infoBuffer[512];
   TIM_HandleTypeDef* handle = const_cast<TIM_HandleTypeDef*>(htim);
 
-  Printf("===== %s Info =====\n"
+  snprintf(infoBuffer, sizeof(infoBuffer),
+        "===== %s Info =====\n"
         "Device ID: %d\n"
-        "TimerFreq: %lu Hz\n"
+        "TimerFreq: %d Hz\n"
         "PSC: %u\n"
-        "ARR: %lu\n"
+        "ARR: %d\n"
         "Counter Mode: %s\n"
         "AutoReloadPreload: %s\n"
         "HAL Base State: %s\n"
         "Callbacks: %s\n"
-        "=======================\n"
-        "\n",
+        "=======================\n",
         TimerInstanceName(handle->Instance), 
         deviceID,
         freq, 
@@ -237,8 +238,7 @@ BspResult<bool> Timer::ShowInfo() const
         TimStateToString(handle->State),
         selfTimerCallback ? "SET" : "NULL"
   );
-  Delay(500);
-  return BspResult<bool>::success(true);
+  return infoBuffer;
 }
 
 

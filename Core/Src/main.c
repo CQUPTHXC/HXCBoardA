@@ -33,7 +33,6 @@
 #include "common_inc.h"
 #include "BspTimer.h"
 #include "BspDevice.h"
-#include "VOFA.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

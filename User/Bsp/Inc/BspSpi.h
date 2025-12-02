@@ -193,7 +193,7 @@ public:
   void InvokeTxCallback();
   void InvokeRxCallback();
   void InvokeTxRxCallback();
-  BspResult<bool> ShowInfo() const;
+  const char* GetInfo() const;
 };
 
 #endif // __cplusplus

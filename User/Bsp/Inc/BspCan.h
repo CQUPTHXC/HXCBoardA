@@ -237,9 +237,9 @@ public:
   BspResult<uint32_t> GetBaudRate() const;
 
   /**
-   * @brief 打印当前CAN配置与运行状态
+   * @brief 获取当前CAN配置与运行状态字符串
    */
-  BspResult<bool> ShowInfo() const;
+  const char* GetInfo() const;
 
   /**
    * @brief 获取错误计数

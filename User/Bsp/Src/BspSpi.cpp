@@ -4,7 +4,6 @@
 
 extern "C"
 {
-#include "VOFA.h"
 }
 
 static Spi* spiInstances[DEVICE_SPI_END - DEVICE_SPI_START] = {nullptr}; // 全局单例指针
@@ -317,10 +316,11 @@ BspResult<uint32_t> Spi::GetState() const
   return BspResult<uint32_t>::success(state);
 }
 
-BspResult<bool> Spi::ShowInfo() const
+const char* Spi::GetInfo() const
 {
-  BSP_CHECK(hspi != nullptr, BspError::NullHandle, bool);
+  if (hspi == nullptr) return "Error: Null Handle";
 
+  static char infoBuffer[512];
   SPI_HandleTypeDef* handle = hspi;
   char csInfo[32];
   char csLevel[8];
@@ -341,7 +341,8 @@ BspResult<bool> Spi::ShowInfo() const
     std::snprintf(csLevel, sizeof(csLevel), "%s", HAL_GPIO_ReadPin(csPin.port, csPin.pin) == GPIO_PIN_RESET ? "LOW" : "HIGH");
   }
 
-  ::Printf("===== %s Info =====\n"
+  snprintf(infoBuffer, sizeof(infoBuffer),
+        "===== %s Info =====\n"
         "Device ID: %d\n"
         "Mode: %s\n"
         "Direction: %s\n"
@@ -378,8 +379,7 @@ BspResult<bool> Spi::ShowInfo() const
         userRxCpltCallback ? "Y" : "N",
         userTxRxCpltCallback ? "Y" : "N"
   );
-  Delay(500);
-  return BspResult<bool>::success(true);
+  return infoBuffer;
 }
 
 void Spi::InvokeTxCallback()

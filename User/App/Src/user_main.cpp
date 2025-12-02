@@ -10,7 +10,6 @@
 #include "Log.h"
 extern "C" 
 {
-  #include "VOFA.h" 
   #include "task.h"
 }
 
@@ -18,17 +17,11 @@ Uart uartDebug(DEVICE_USART_4);
 
 void userMain() 
 {
-  float testNumber;
-  uint32_t counter = 0;
-
   Log::Init(uartDebug);
-  Log::RegisterData_Vofa("testNumber", &testNumber);
-  
+  Log::Print("HXCBordA ready\n");
   while (1)
   {
-    counter++;
-    Log::Print("%d\n", counter);
-    Delay(1);
+    Delay(10);
   }
 }
 

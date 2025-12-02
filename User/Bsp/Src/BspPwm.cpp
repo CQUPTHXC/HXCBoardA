@@ -3,7 +3,6 @@
 
 extern "C"
 {
-#include "VOFA.h"
 }
 
 static const char* TimerInstanceName(const TIM_TypeDef* instance)
@@ -336,10 +335,11 @@ BspResult<uint16_t> Pwm::GetPSC() const
   return BspResult<uint16_t>::success(PSC);
 }
 
-BspResult<bool> Pwm::ShowInfo()
+const char* Pwm::GetInfo()
 {
-  BSP_CHECK(htim != nullptr, BspError::NullHandle, bool);
+  if (htim == nullptr) return "Error: Null Handle";
 
+  static char infoBuffer[512];
   TIM_HandleTypeDef* handle = htim;
   const uint32_t compare1 = __HAL_TIM_GET_COMPARE(handle, TIM_CHANNEL_1);
   const uint32_t compare2 = __HAL_TIM_GET_COMPARE(handle, TIM_CHANNEL_2);
@@ -350,18 +350,19 @@ BspResult<bool> Pwm::ShowInfo()
   const float duty2 = ARR ? (static_cast<float>(compare2) / static_cast<float>(ARR)) * 100.0f : 0.0f;
   const float duty3 = ARR ? (static_cast<float>(compare3) / static_cast<float>(ARR)) * 100.0f : 0.0f;
   const float duty4 = ARR ? (static_cast<float>(compare4) / static_cast<float>(ARR)) * 100.0f : 0.0f;
-  ::Printf("===== %s Info =====\n"
+  
+  snprintf(infoBuffer, sizeof(infoBuffer),
+          "===== %s Info =====\n"
           "Device ID: %d\n"
-          "TimerFreq: %lu Hz\n"
+          "TimerFreq: %u Hz\n"
           "PSC: %u\n"
-          "ARR: %lu\n"
+          "ARR: %u\n"
           "Duty(CH1): %.1f%%\n"
           "Duty(CH2): %.1f%%\n"
           "Duty(CH3): %.1f%%\n"
           "Duty(CH4): %.1f%%\n"
           "Callbacks: %s\n"
-          "=======================\n"
-          "\n",
+          "=======================\n",
           TimerInstanceName(handle->Instance),
           deviceID,
           freq,
@@ -373,6 +374,5 @@ BspResult<bool> Pwm::ShowInfo()
           duty4,
           selfTimerCallback ? "SET" : "NULL"
   );
-  Delay(500);
-  return BspResult<bool>::success(true);
+  return infoBuffer;
 }

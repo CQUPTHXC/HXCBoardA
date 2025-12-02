@@ -7,7 +7,6 @@ extern "C" {
 
 
 void userMain();
-void ClarkeParkTransform(float electricalAngle);
 
 #ifdef __cplusplus
 }

@@ -1,9 +1,5 @@
 #include "BspCan.h"
 
-extern "C"
-{
-  #include "VOFA.h"
-}
 
 
 static Can* canInstances[DEVICE_CAN_END - DEVICE_CAN_START] = {nullptr}; // 全局单例指针
@@ -573,9 +569,11 @@ BspResult<bool> Can::ConfigFilterStdId(uint32_t id, uint32_t mask, CanFIFO fifo,
   return BspResult<bool>::success(true);
 }
 
-BspResult<bool> Can::ShowInfo() const
+const char* Can::GetInfo() const
 {
-  BSP_CHECK(hcan != nullptr, BspError::NullHandle, bool);
+  if (hcan == nullptr) return "Error: Null Handle";
+
+  static char infoBuffer[512]; // 增加缓冲区大小以容纳详细信息
 
   const CAN_HandleTypeDef* handle = hcan;
   const uint32_t apb1Freq = HAL_RCC_GetPCLK1Freq();
@@ -596,26 +594,24 @@ BspResult<bool> Can::ShowInfo() const
     samplePoint = (1.0 + static_cast<double>(bs1Tq)) / static_cast<double>(tqPerBit) * 100.0;
   }
 
-
-
-  Printf("===== %s Info =====\n"
+  snprintf(infoBuffer, sizeof(infoBuffer),
+        "===== %s Info =====\n"
         "deviceID: %d\n"
         "mode: %s\n"
         "state: %s\n"
-        "apb1: %lu Hz\n"
-        "baud(target/actual): %lu / %lu Hz\n"
+        "apb1: %u Hz\n"
+        "baud(target/actual): %u / %u Hz\n"
         "sample: %.1f%%\n"
-        "prescaler: %lu\n"
-        "ts1: %lu\n"
-        "ts2: %lu\n"
+        "prescaler: %u\n"
+        "ts1: %u\n"
+        "ts2: %u\n"
         "AutoBusOff:%s\n" 
         "AutoWakeUp:%s\n"
         "AutoRetrans:%s\n"
         "RxFifoLocked:%s\n"
         "TxFifoPriority:%s\n"
         "Callbacks: Rx0=%s Rx1=%s Tx=%s\n"
-        "=======================\n"
-        "\n", 
+        "=======================\n", 
         CanInstanceName(handle->Instance),
         deviceID, 
         CanModeToString(handle->Init.Mode),
@@ -631,8 +627,8 @@ BspResult<bool> Can::ShowInfo() const
         userRxFifo1Callback ? "SET" : "NULL", 
         userTxCallback      ? "SET" : "NULL"
   ); 
-  Delay(500);
-  return BspResult<bool>::success(true);
+  
+  return infoBuffer;
 }
 
 BspResult<bool> Can::ConfigFilterExtId(uint32_t id, uint32_t mask, CanFIFO fifo, uint32_t filterBank)

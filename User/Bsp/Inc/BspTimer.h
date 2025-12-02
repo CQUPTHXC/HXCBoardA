@@ -65,8 +65,8 @@ public:
   BspResult<bool> SetCallback(Callback_t _timerCallback);
   // 供内部/测试手动触发回调；要求先通过 SetCallback 设置函数
   void InvokeCallback(); // 添加一个公共的调用函数
-  // 输出当前配置（频率、PSC、ARR 等），便于调试
-  BspResult<bool> ShowInfo() const;
+  // 获取当前配置（频率、PSC、ARR 等）字符串，便于调试
+  const char* GetInfo() const;
 };
 #endif // __cplusplus
 

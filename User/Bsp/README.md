@@ -42,13 +42,14 @@ BspResult<bool> Bsp_StopDevice(BspDevice_t devID);
 **核心功能**
 - `Init(uint32_t baud)`：初始化 UART 并设置波特率。
 - `EnableRxDMA()`：开启 DMA 接收。
-- `SendData(const uint8_t* data, size_t size)` / `ReceiveData(uint8_t* data, size_t size)`：发送与接收。
+- `SendData(const uint8_t* data, size_t size)`：发送数据（采用双缓冲 Ping-Pong 机制，支持高频连续发送）。
+- `ReceiveData(uint8_t* data, size_t size)`：接收数据。
 - `Printf(const char *format, ...)`：格式化输出（VOFA/调试日志）。
 
 **回调与状态**
 - `SetTxCallback(Callback_t cb)` / `SetRxCallback(Callback_t cb)`：注册发送/接收完成回调。
 - `InvokeTxCallback()` / `InvokeRxCallback(uint16_t size)`：内部触发接口。
-- `ShowInfo()`：输出当前 UART 配置信息。
+- `GetInfo()`：获取当前 UART 配置信息字符串。
 
 ---
 
@@ -71,7 +72,7 @@ BspResult<bool> Bsp_StopDevice(BspDevice_t devID);
 **回调与状态**
 - `SetRxFifo0Callback(CanRxCallback_t cb)` / `SetRxFifo1Callback(CanRxCallback_t cb)`：注册 FIFO 接收回调。
 - `SetTxCallback(Callback_t cb)`：注册发送邮箱完成回调。
-- `ShowInfo()`：打印 CAN 速率、滤波配置、回调状态等信息。
+- `GetInfo()`：获取 CAN 速率、滤波配置、回调状态等信息字符串。
  
 ---
 
@@ -89,7 +90,7 @@ BspResult<bool> Bsp_StopDevice(BspDevice_t devID);
 **回调与状态**
 - `SetTxCallback(SpiTxRxCallback_t cb)` / `SetRxCallback(SpiTxRxCallback_t cb)` / `SetTxRxCallback(SpiTxRxCallback_t cb)`：注册 DMA 完成回调。
 - `IsBusy()` / `GetState()`：查询 SPI 硬件状态。
-- `ShowInfo()`：输出实例、工作模式、数据宽度、预分频、DMA 链接等信息。
+- `GetInfo()`：获取实例、工作模式、数据宽度、预分频、DMA 链接等信息字符串。
 
 ---
 
@@ -105,7 +106,7 @@ BspResult<bool> Bsp_StopDevice(BspDevice_t devID);
 
 **状态查询**
 - `GetFrequency()` / `GetARR()` / `GetPSC()`：读取当前参数。
-- `ShowInfo()`：输出实例、频率、PSC、ARR、CH1 占空比、回调注册情况。
+- `GetInfo()`：获取实例、频率、PSC、ARR、CH1 占空比、回调注册情况字符串。
 
 ---
 
@@ -117,7 +118,7 @@ BspResult<bool> Bsp_StopDevice(BspDevice_t devID);
 - `Start()` / `Stop()`：启停定时器。
 - `SetCallback(Callback_t cb)`：注册定时回调。
 - `InvokeCallback()`：内部触发接口。
-- `ShowInfo()`：输出时钟参数、回调状态。
+- `GetInfo()`：获取时钟参数、回调状态字符串。
 
 ---
 

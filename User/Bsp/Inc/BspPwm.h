@@ -67,7 +67,7 @@ public:
   BspResult<uint32_t> GetARR() const; // 获取ARR值
   BspResult<uint16_t> GetPSC() const; // 获取PSC值
 
-  BspResult<bool> ShowInfo();
+  const char* GetInfo();
 };
 #endif // __cplusplus
 

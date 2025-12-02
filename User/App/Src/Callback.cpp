@@ -5,7 +5,6 @@
 
 extern "C" 
 {
-#include "VOFA.h"
 }
 
 
@@ -14,28 +13,16 @@ extern "C"
 {
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-  if (huart == VOFA_UART) 
-  {
-    VOFA_RxCallBack();
-  }
-  else
-  {
-    Uart_RxEventCallback_Trampoline(huart, Size);
-  }
+
+  Uart_RxEventCallback_Trampoline(huart, Size);
+
 }
 
 
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) 
 {
-  if (huart == VOFA_UART) 
-  {
-    TxCallBack_DoubleBufferUartDMA(&uartToVOFA);
-  }
-  else
-  {
-    Uart_TxCpltCallback_Trampoline(huart);
-  }
+  Uart_TxCpltCallback_Trampoline(huart);
 }
 
 // ==================== CAN 回调函数 ====================
