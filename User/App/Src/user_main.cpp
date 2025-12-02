@@ -13,7 +13,7 @@ extern "C"
   #include "task.h"
 }
 
-Uart uartDebug(DEVICE_USART_4);
+Uart uartDebug(DEVICE_USART_6);
 
 void userMain() 
 {
