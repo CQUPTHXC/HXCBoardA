@@ -1,0 +1,5 @@
+#ifndef B2MW_MANAGER_HPP
+#define B2MW_MANAGER_HPP
+
+
+#endif /* B2MW_MANAGER_HPP */

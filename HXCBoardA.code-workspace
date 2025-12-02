@@ -1,0 +1,46 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "usart.h": "c",
+            "limits": "cpp",
+            "type_traits": "cpp",
+            "vofa.h": "c",
+            "uart_dma.h": "c",
+            "string.h": "c",
+            "cctype": "cpp",
+            "cmath": "cpp",
+            "cstdarg": "cpp",
+            "cstddef": "cpp",
+            "cstdint": "cpp",
+            "cstdio": "cpp",
+            "cstdlib": "cpp",
+            "cstring": "cpp",
+            "cwchar": "cpp",
+            "cwctype": "cpp",
+            "exception": "cpp",
+            "initializer_list": "cpp",
+            "*.tcc": "cpp",
+            "cfenv": "cpp",
+            "typeinfo": "cpp",
+            "__config": "cpp",
+            "__nullptr": "cpp",
+            "array": "c",
+            "bitset": "c",
+            "string_view": "c",
+            "utility": "c",
+            "__hash_table": "c",
+            "__split_buffer": "c",
+            "deque": "c",
+            "queue": "c",
+            "string": "c",
+            "unordered_map": "c",
+            "vector": "c"
+        }
+    },
+    "extensions": {}
+}
