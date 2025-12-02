@@ -186,12 +186,12 @@ private:
      * @brief 记录每个CAN是否已经初始化
      * @details 下标0为CAN1,下标1为CAN2
      */
-    bool CanIsInit[USE_CAN_END];
+    volatile bool CanIsInit[USE_CAN_END];
 
     /**
      * @brief 记录CAN Manger专用的基本定时器是否已经初始化
      */
-    bool TimIsInit;
+    volatile bool TimIsInit;
     
     /**
      * @brief 记录每个CAN外设的工作模式配置
