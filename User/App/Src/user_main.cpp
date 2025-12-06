@@ -19,6 +19,7 @@ void userMain()
 {
   Log::Init(uartDebug);
   Log::Print("HXCBordA ready\n");
+  
   while (1)
   {
     Delay(10);
