@@ -338,7 +338,7 @@ BspResult<bool> Uart::EnableRxDMA()
   {
     __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT);
   }
-  
+
   return BspResult<bool>::success(true);
 }
 
@@ -372,11 +372,43 @@ BspResult<uint32_t> Uart::ReceiveData(uint8_t* data, size_t size)
  */
 void Uart::RxEventCallback(uint16_t size)
 {
-  // 更新环形缓冲区的写指针
-  // DMA已经把数据放在了正确的位置，我们只需要告诉环形缓冲区数据写到了哪里
-  // RingBuffer_Write(&ringBuffer_Rx, dmaRxBuffer, size);
 
-  // 重新启动DMA空闲中断接收，准备接收下一次数据
+}
+
+/**
+ * @brief  处理UART错误并尝试恢复
+ * @note   由蹦床函数在中断上下文中调用
+ *         - 清除常见错误标志 (ORE, FE, NE)
+ *         - 如果接收中断被关闭，尝试重启DMA接收
+ */
+void Uart::HandleError()
+{
+  if (huart == nullptr) return;
+
+  // 1. 获取错误代码
+  uint32_t errCode = huart->ErrorCode;
+
+  // 2. 检查并清除常见错误标志
+  // 这些错误通常会导致接收中断被 HAL 库关闭
+  if (errCode & (HAL_UART_ERROR_ORE | HAL_UART_ERROR_FE | HAL_UART_ERROR_NE))
+  {
+    // 暴力清除标志位
+    __HAL_UART_CLEAR_OREFLAG(huart);
+    __HAL_UART_CLEAR_FEFLAG(huart);
+    __HAL_UART_CLEAR_NEFLAG(huart);
+    
+    // 3. 尝试重启接收
+    // 只有当 HAL 库已经把状态置为 READY (说明它已经停止了接收) 时才重启
+    // 避免在 DMA 还在跑的时候重复开启
+    if (huart->RxState == HAL_UART_STATE_READY)
+    {
+        // 重新开启 DMA 接收 (Circular 模式)
+        // 注意：这里假设我们总是使用 dmaRxBuffer 和 DMA_RX_BUFFER_SIZE
+        // 如果你的应用场景有变化，可能需要记录上次使用的 buffer 和 size
+        memset(dmaRxBuffer, 0, DMA_RX_BUFFER_SIZE);
+        HAL_UARTEx_ReceiveToIdle_DMA(huart, dmaRxBuffer, DMA_RX_BUFFER_SIZE);
+    }
+  }
 }
 
 /**
@@ -453,7 +485,6 @@ void Uart::InvokeRxCallback(uint16_t size)
   {
     userRxCpltCallback(size);
   }
-  HAL_UARTEx_ReceiveToIdle_DMA(huart, dmaRxBuffer, DMA_RX_BUFFER_SIZE);
 }
 
 
@@ -549,6 +580,29 @@ void Uart_RxEventCallback_Trampoline(void *_uartHandle, uint16_t size)
     if (instance != nullptr)
     {
       instance->InvokeRxCallback(size);
+    }
+  }
+}
+
+/**
+ * @brief  错误回调的“蹦床”函数
+ * @param  _uartHandle 触发中断的UART句柄 (void*类型)
+ */
+void Uart_ErrorCallback_Trampoline(void *_uartHandle)
+{
+  auto deviceResult = Bsp_FindDeviceByHandle(_uartHandle);
+  if (!deviceResult.ok())
+  {
+    return;
+  }
+
+  BspDevice_t deviceID = deviceResult.value;
+  if (deviceID >= DEVICE_USART_START && deviceID < DEVICE_USART_END)
+  {
+    Uart* instance = uartInstances[deviceID - DEVICE_USART_START];
+    if (instance != nullptr)
+    {
+      instance->HandleError();
     }
   }
 }

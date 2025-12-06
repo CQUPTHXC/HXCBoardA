@@ -17,6 +17,7 @@
 
 void Uart_TxCpltCallback_Trampoline(void *_uartHandle);
 void Uart_RxEventCallback_Trampoline(void *_uartHandle, uint16_t size);
+void Uart_ErrorCallback_Trampoline(void *_uartHandle);
 
 #ifdef __cplusplus
   } // extern "C"
@@ -82,6 +83,8 @@ public:
   BspResult<uint32_t> SendData(const uint8_t* data, size_t size);
   BspResult<uint32_t> ReceiveData(uint8_t* data, size_t size); // 接收数据
   void Printf(const char *format, ...);
+
+  void HandleError();
 
   void InvokeTxCallback();
   void InvokeRxCallback(uint16_t size);
