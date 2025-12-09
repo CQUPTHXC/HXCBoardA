@@ -19,7 +19,7 @@ void Log::Init(Uart& uartInstance)
   instance.debugUart = &uartInstance; // 取地址保存
 
   instance.debugUart->Init(115200); // 初始化UART波特率
-  instance.debugUart->EnableRxDMA(true); // 启用DMA接收
+  instance.debugUart->EnableRxDMA(false); // 启用DMA接收
 
   instance.debugUart->SetRxCallback([](uint16_t dmaCurrentPos)
   {
