@@ -323,9 +323,11 @@ void Uart::Printf(const char *format, ...)
  * @return BspResult<bool> 操作结果
  * @note   使用IDLE线空闲检测模式，配合DMA临时缓冲区
  */
-BspResult<bool> Uart::EnableRxDMA()
+BspResult<bool> Uart::EnableRxDMA(bool circular)
 {
   BSP_CHECK(huart != nullptr, BspError::NullHandle, bool);
+
+  rxCircularMode = circular;
 
   HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(huart, dmaRxBuffer, DMA_RX_BUFFER_SIZE);
   if (status != HAL_OK)
@@ -342,25 +344,61 @@ BspResult<bool> Uart::EnableRxDMA()
   return BspResult<bool>::success(true);
 }
 
-/**
- * @brief  从接收环形缓冲区读取数据
- * @param  data 用于存放读取数据的用户缓冲区指针
- * @param  size 期望读取的数据大小
- * @return BspResult<uint32_t> 操作结果，成功返回实际从缓冲区读取到的数据大小
- */
-BspResult<uint32_t> Uart::ReceiveData(uint8_t* data, size_t size) 
+BspResult<uint32_t> Uart::PushToRxBuffer(uint8_t *data, uint16_t len, size_t offset)
 {
   BSP_CHECK(huart != nullptr, BspError::NullHandle, uint32_t);
   BSP_CHECK(data != nullptr, BspError::InvalidParam, uint32_t);
-  BSP_CHECK(size > 0, BspError::InvalidParam, uint32_t);
 
-  // 直接从DMA缓冲区复制数据
-  // 注意：这里假设调用者知道数据在dmaRxBuffer中，并且size是正确的
-  // 在RxEventCallback中，size是实际接收到的长度
-  if (size > DMA_RX_BUFFER_SIZE) size = DMA_RX_BUFFER_SIZE;
-  memcpy(data, dmaRxBuffer, size);
-  
-  return BspResult<uint32_t>::success(size);
+  if (offset >= DMA_RX_BUFFER_SIZE) return BspResult<uint32_t>::failure(BspError::InvalidParam, 0, {__FILE__, __LINE__, __func__});
+  if (offset + len > DMA_RX_BUFFER_SIZE) len = DMA_RX_BUFFER_SIZE - offset;
+
+  memcpy(data, &dmaRxBuffer[offset], len);
+
+  return BspResult<uint32_t>::success(len);
+}
+
+
+BspResult<uint32_t> Uart::ReceiveData(uint8_t* data, uint16_t currentDmaPos) 
+{
+  uint32_t length = 0;
+
+    if (!rxCircularMode)
+    {
+        // 普通模式：直接从 0 读取 currentDmaPos 长度
+        return PushToRxBuffer(data, currentDmaPos, 0);
+    }
+
+    // Circular 模式处理
+    if (currentDmaPos >= lastDmaRxPos)
+    {
+        // 情况 1: 指针向后移动，未卷绕
+        // [ ... lastRxPos ... NewData ... currentDmaPos ... ]
+        length = currentDmaPos - lastDmaRxPos;
+        PushToRxBuffer(data, length, lastDmaRxPos);
+    }
+    else
+    {
+        // 情况 2: 指针卷绕
+        // [ NewData2 ... currentDmaPos ... OldData ... lastRxPos ... NewData1 ... End ]
+        
+        // 第一段：lastRxPos -> End
+        uint16_t len1 = DMA_RX_BUFFER_SIZE - lastDmaRxPos;
+        PushToRxBuffer(data, len1, lastDmaRxPos);
+        
+        // 第二段：0 -> currentDmaPos
+        uint16_t len2 = currentDmaPos;
+        PushToRxBuffer(data + len1, len2, 0);
+        
+        length = len1 + len2;
+    }
+
+    // 更新位置
+    lastDmaRxPos = currentDmaPos;
+    
+    // 处理边界情况：如果 buffer 刚好填满，HAL 库可能会返回 0 或 Size
+    if (lastDmaRxPos == DMA_RX_BUFFER_SIZE) lastDmaRxPos = 0;
+
+    return BspResult<uint32_t>::success(length);
 }
 
 /**
@@ -406,7 +444,7 @@ void Uart::HandleError()
         // 注意：这里假设我们总是使用 dmaRxBuffer 和 DMA_RX_BUFFER_SIZE
         // 如果你的应用场景有变化，可能需要记录上次使用的 buffer 和 size
         memset(dmaRxBuffer, 0, DMA_RX_BUFFER_SIZE);
-        HAL_UARTEx_ReceiveToIdle_DMA(huart, dmaRxBuffer, DMA_RX_BUFFER_SIZE);
+        EnableRxDMA(rxCircularMode); 
     }
   }
 }
@@ -449,16 +487,6 @@ BspResult<bool> Uart::SetRxCallback(UartRxCallback_t _userCallback)
   }
 
 
-/**
- * @brief  获取接收缓冲区中待读取的数据长度
- * @return BspResult<uint32_t> 操作结果，成功返回待读取的数据长度
- */
-BspResult<uint32_t> Uart::GetRxDataLength() const
-{
-  // uint32_t length = RingBuffer_GetLength(&ringBuffer_Rx);
-  return BspResult<uint32_t>::success(0);
-}
-
 
 /**
  * @brief  调用内部核心发送回调和用户自定义发送回调
@@ -484,6 +512,16 @@ void Uart::InvokeRxCallback(uint16_t size)
   if (userRxCpltCallback != nullptr)
   {
     userRxCpltCallback(size);
+  }
+
+  if (!rxCircularMode)
+  {
+    // 1. 停止当前的接收 (这会重置 DMA 计数器)
+    HAL_UART_AbortReceive(huart);
+    
+    // 2. 重新启动接收 (使用相同的模式设置)
+    // 注意：这里会有极短的盲区，但对于 Log/命令行交互是完全可以接受的
+    EnableRxDMA(false);
   }
 }
 
@@ -522,7 +560,6 @@ void Uart_TxCpltCallback_Trampoline(void *_uartHandle)
  */
 BspResult<bool> Uart::ClearRxBuffer()
 {
-  // RingBuffer_Clear(&ringBuffer_Rx);
   return BspResult<bool>::success(true);
 }
 

@@ -32,20 +32,16 @@ private:
   BspDevice_t deviceID;
   UART_HandleTypeDef* huart;
 
-  // RingBuffer_t ringBuffer_Tx; // 环形缓冲区对象
-  // RingBuffer_t ringBuffer_Rx; // 环形缓冲区对象
-
   UartTxCallback_t userTxCpltCallback = nullptr;
   UartRxCallback_t userRxCpltCallback = nullptr;
-
-  // static const uint32_t RING_BUFFER_SIZE = 128; // 环形缓冲区大小，必须是2的幂
 
   static const uint32_t DMA_RX_BUFFER_SIZE = 64;
   static const uint32_t TX_BUFFER_SIZE = 256; // 发送缓冲区大小
 
   uint8_t dmaRxBuffer[DMA_RX_BUFFER_SIZE]; // DMA接收缓冲区
+  volatile uint16_t lastDmaRxPos = 0; // 上次DMA接收位置
+  bool rxCircularMode = true; // 是否启用环形DMA接收模式
 
-  // 乒乓发送缓冲区
   uint8_t txBuffers[2][TX_BUFFER_SIZE];
   volatile uint16_t txBufferCounts[2] = {0};
   volatile uint8_t fillIndex = 0; // 当前正在填充的缓冲区索引 (0 或 1)
@@ -53,10 +49,9 @@ private:
 
   void StartDmaTx(uint8_t index); // 内部辅助函数：启动DMA发送
   BspResult<bool> ConfigureUart(uint32_t baud);
-
+  BspResult<uint32_t> PushToRxBuffer(uint8_t *data, uint16_t len, size_t offset);
 
 public:
-
 
   explicit Uart(BspDevice_t _deviceID)
   {
@@ -78,10 +73,10 @@ public:
   BspResult<bool> SetTxCallback(UartTxCallback_t _userCallback);
   BspResult<bool> SetRxCallback(UartRxCallback_t _userCallback);
 
-  BspResult<bool> EnableRxDMA(); // 启用DMA接收
+  BspResult<bool> EnableRxDMA(bool circular = true);
 
   BspResult<uint32_t> SendData(const uint8_t* data, size_t size);
-  BspResult<uint32_t> ReceiveData(uint8_t* data, size_t size); // 接收数据
+  BspResult<uint32_t> ReceiveData(uint8_t* data, uint16_t currentDmaPos); // 接收数据
   void Printf(const char *format, ...);
 
   void HandleError();
@@ -91,10 +86,10 @@ public:
 
   void TxCpltCallback(); // 发送完成回调
   void RxEventCallback(uint16_t size); // 新增：接收事件回调
-  BspResult<uint32_t> GetRxDataLength() const; // 新增：获取接收缓冲区中待读数据的长度
 
   BspResult<bool> ClearRxBuffer();
   BspResult<bool> ClearTxBuffer();
+
   const char* GetInfo() const;
 
 };

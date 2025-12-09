@@ -19,20 +19,17 @@ void Log::Init(Uart& uartInstance)
   instance.debugUart = &uartInstance; // 取地址保存
 
   instance.debugUart->Init(115200); // 初始化UART波特率
-  instance.debugUart->EnableRxDMA(); // 启用DMA接收
+  instance.debugUart->EnableRxDMA(true); // 启用DMA接收
 
-  instance.debugUart->SetRxCallback([](uint16_t size)
+  instance.debugUart->SetRxCallback([](uint16_t dmaCurrentPos)
   {
-    // 限制长度防止溢出，并预留结束符位置
-    if (size > 63) size = 63;
-
     uint8_t rxData[64] = {0};
-    Log::GetInstance().debugUart->ReceiveData(rxData, size);
+    auto receiveResult = Log::GetInstance().debugUart->ReceiveData(rxData, dmaCurrentPos);
     
     // 确保字符串以 \0 结尾，防止 strtof 越界
-    rxData[size] = '\0';
+    rxData[receiveResult.value] = '\0';
 
-    Log::ProcessRxData(rxData, size);
+    Log::ProcessRxData(rxData, receiveResult.value);
   }); // 设置接收回调
 
   logQueue = xQueueCreate(20, sizeof(char*)); // 创建日志队列
