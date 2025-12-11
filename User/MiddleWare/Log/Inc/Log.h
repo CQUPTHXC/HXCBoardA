@@ -60,6 +60,7 @@ private:
   ~Log() = default;
 
   static void LogTask(void *arg);
+  static constexpr size_t LOG_MSG_MAX_SIZE = 128;
 
   VofaCmdTypedef cmdList[LOG_CMD_LIST_SIZE] = {0};
   static QueueHandle_t logQueue;

@@ -42,12 +42,12 @@ void Log::Print(const char* fmt, ...)
   if (logQueue == nullptr) return; // 未初始化日志系统
 
   // 格式化日志消息
-  char* logMsg = (char*)pvPortMalloc(128); // 分配内存
+  char* logMsg = (char*)pvPortMalloc(LOG_MSG_MAX_SIZE); // 分配内存
   if (logMsg == nullptr) return; // 内存分配失败
 
   va_list args;
   va_start(args, fmt);
-  vsnprintf(logMsg, 256, fmt, args);
+  vsnprintf(logMsg, LOG_MSG_MAX_SIZE, fmt, args);
   va_end(args);
 
   // 将日志消息发送到队列

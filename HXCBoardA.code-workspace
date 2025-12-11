@@ -39,7 +39,10 @@
             "queue": "c",
             "string": "c",
             "unordered_map": "c",
-            "vector": "c"
+            "vector": "c",
+            "chrono": "cpp",
+            "algorithm": "cpp",
+            "__bit_reference": "cpp"
         }
     },
     "extensions": {}

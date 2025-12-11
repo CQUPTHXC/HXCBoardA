@@ -190,6 +190,7 @@ BspResult<uint32_t> Uart::SendData(const uint8_t* data, size_t size)
       {
         // DMA忙，且当前缓冲区已满。必须等待DMA释放另一个缓冲区。
         __enable_irq();
+        vTaskDelay(1); // 避免死循环占用CPU
         continue; // 忙等待
       }
     }
