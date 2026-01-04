@@ -2,6 +2,7 @@
 #include "BspUart.h"
 #include "BspCan.h"
 #include "BspSpi.h"
+#include "BspGpio.h"
 
 extern "C" 
 {
@@ -81,6 +82,17 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   Spi_RxCpltCallback_Trampoline(hspi);
+}
+
+//  =================== GPIO 回调函数 ==================
+
+/**
+ * @brief HAL GPIO EXTI回调函数（重写HAL库的弱定义）
+ * @param GPIO_Pin 触发中断的GPIO引脚
+ */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  Gpio_ExtiCallback_Trampoline(GPIO_Pin);
 }
 
 } // extern "C"
